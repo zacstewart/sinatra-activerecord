@@ -7,24 +7,22 @@ tasks for dealing with an SQL database using the [ActiveRecord ORM](http://api.r
 
 ## Instructions
 
-First, put the gem in your `Gemfile` (or install it manually):
+First, put the gem into your `Gemfile` (or install it manually):
 
 ```ruby
 gem 'sinatra-activerecord'
 ```
 
-Install the `sinatra-activerecord` gem along with one of the database adapters:
+Also put one of the database adapters into your `Gemfile` (or install
+them manually):
 
-```
-[sudo] gem install sqlite3
-[sudo] gem install mysql
-[sudo] gem install pg
-```
+- `sqlite3` (SQLite)
+- `mysql` (MySQL)
+- `pg` (PostgreSQL)
 
 Then add this to your `Rakefile`:
 
 ```ruby
-# Rakefile
 require 'sinatra/activerecord/rake'
 ```
 
@@ -58,7 +56,7 @@ class CreateUsers < ActiveRecord::Migration
 end
 ```
 
-Run the migration:
+After you've written the migration, migrate the database:
 
 ```
 $ rake db:migrate
@@ -77,8 +75,8 @@ external file, and require them in your `app.rb` aftewards. Usually
 models in Sinatra aren't that complex, so you can put them all in one
 file, for example `./db/models.rb`.
 
-That's it, you're done. Now just establish the database connection in
-your `app.rb` (let's assume you chose the `sqlite3` adapter), and
+Now just establish the database connection in your `app.rb`
+(let's assume you chose the `sqlite3` adapter), and
 require the models if necessary:
 
 ```ruby
@@ -89,7 +87,11 @@ require 'sinatra/activerecord'
 require './db/models'
 
 set :database, 'sqlite://foo.db'
+```
 
+Now everything just works:
+
+```ruby
 get '/users' do
   @users = User.all
   erb :index
