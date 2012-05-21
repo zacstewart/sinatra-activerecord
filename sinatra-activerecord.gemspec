@@ -1,33 +1,22 @@
-Gem::Specification.new do |s|
-  s.specification_version = 2 if s.respond_to? :specification_version=
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+# encoding:utf-8
 
-  s.name = 'sinatra-activerecord'
-  s.version = '0.1.3'
-  s.date = '2009-09-21'
+Gem::Specification.new do |gem|
+  gem.name         = 'sinatra-activerecord'
+  gem.version      = '0.1.3'
+  gem.date         = '2009-09-21'
 
-  s.description = "Extends Sinatra with activerecord helpers for instant activerecord use"
-  s.summary = s.description
+  gem.description  = "Extends Sinatra with ActiveRecord helpers."
+  gem.summary      = gem.description
+  gem.homepage     = "http://github.com/janko-m/sinatra-activerecord"
 
-  s.authors = ["Blake Mizerany"]
-  s.email = "blake.mizerany@gmail.com"
+  gem.author       = "Janko Marohnić"
+  gem.email        = "janko.marohnic@gmail.com"
 
-  # = MANIFEST =
-  s.files = %w[
-    README.md
-    lib/sinatra/activerecord.rb
-    lib/sinatra/activerecord/rake.rb
-    sinatra-activerecord.gemspec
-  ]
-  # = MANIFEST =
+  gem.license      = "MIT"
 
-  s.extra_rdoc_files = %w[README.md]
-  s.add_dependency 'sinatra',    '>= 0.9.4'
+  gem.files        = `git ls-files`.split($\)
+  gem.require_path = "lib"
+  gem.test_files   = gem.files.grep(%r{^(test|spec|features)/})
 
-  s.has_rdoc = true
-  s.homepage = "http://github.com/rtomayko/sinatra-activerecord"
-  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Sinatra::ActiveRecord"]
-  s.require_paths = %w[lib]
-  s.rubyforge_project = 'bmizerany'
-  s.rubygems_version = '1.1.1'
+  gem.add_dependency 'sinatra', '>= 0.9.4'
 end
