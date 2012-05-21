@@ -1,12 +1,6 @@
-require 'sinatra/base'
-require 'sinatra/activerecord'
+require 'test_helper'
 
-class MockSinatraApp < Sinatra::Base
-  register Sinatra::ActiveRecordExtension
-end
-
-class TestSinatraActiveRecord < Test::Unit::TestCase
-
+class SinatraActiveRecordTest < Test::Unit::TestCase
   def setup
     File.unlink 'test.db' rescue nil
     ENV.delete('DATABASE_URL')
@@ -31,5 +25,4 @@ class TestSinatraActiveRecord < Test::Unit::TestCase
     @app.database = 'sqlite://test.db'
     assert @app.database.respond_to? :table_exists?
   end
-
 end

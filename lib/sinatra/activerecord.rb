@@ -19,12 +19,12 @@ module Sinatra
     end
 
     def database
-      @database ||= (
+      @database ||= begin
         url = URI(database_url)
         ActiveRecord::Base.logger = activerecord_logger
         ActiveRecord::Base.establish_connection(database_options)
         ActiveRecord::Base
-      )
+      end
     end
 
   protected

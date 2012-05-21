@@ -18,5 +18,9 @@ Gem::Specification.new do |gem|
   gem.require_path = "lib"
   gem.test_files   = gem.files.grep(%r{^(test|spec|features)/})
 
-  gem.add_dependency 'sinatra', '>= 0.9.4'
+  gem.add_dependency 'sinatra', '~> 1.0'
+  gem.add_dependency 'activerecord', '~> 3.0'
+
+  gem.add_development_dependency 'bundler', '~> 1.0'
+  gem.add_development_dependency 'rake', '~> 0.9'
 end

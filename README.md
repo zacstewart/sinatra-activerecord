@@ -1,109 +1,122 @@
-Sinatra ActiveRecord Extension 
-========================
+# Sinatra ActiveRecord Extension
 
-The official fork is now at:
-http://github.com/janko-m/sinatra-activerecord
+## About
 
-This one is now closed.
+Extends [Sinatra](http://www.sinatrarb.com/) with extension methods and Rake
+tasks for dealing with an SQL database using the [ActiveRecord ORM](http://api.rubyonrails.org/).
 
----
+## Instructions
 
-Extends [Sinatra](http://www.sinatrarb.com/) with a extension methods and Rake
-tasks for dealing with a SQL database using the [ActiveRecord ORM](http://api.rubyonrails.org/).
+First, put the gem in your `Gemfile` (or install it manually):
+
+```ruby
+gem 'sinatra-activerecord'
+```
 
 Install the `sinatra-activerecord` gem along with one of the database adapters:
 
-    sudo gem install activerecord
-    sudo gem install sinatra-activerecord -s http://gemcutter.org
-    sudo gem install sqlite3
-    sudo gem install mysql
-    sudo gem install postgres
+```
+[sudo] gem install sqlite3
+[sudo] gem install mysql
+[sudo] gem install pg
+```
 
-adding this to your `Rakefile`
+Then add this to your `Rakefile`:
 
-    # require your app file first
-    require 'sinatra-ar-exmple-app'
-    require 'sinatra/activerecord/rake'
+```ruby
+# Rakefile
+require 'sinatra/activerecord/rake'
+```
 
-In terminal, test that it works
+In the terminal, test that it works:
 
-    $ rake -T
-    rake db:create_migration  # create an ActiveRecord migration in ./db/migrate
-    rake db:migrate           # migrate your database
+```
+$ rake -T
+rake db:create_migration  # create an ActiveRecord migration in ./db/migrate
+rake db:migrate           # migrate your database
+```
 
-Now you can create a migration
+Now you can create a migration:
 
-    $ rake db:create_migration NAME=create_foos
+```
+$ rake db:create_migration NAME=create_users
+```
 
-This will create a migration file in ./db/migrate, ready for editing
+This will create a migration file in the `./db/migrate` folder, ready for editing.
 
-    class CreateFoos < ActiveRecord::Migration
-      def self.up
-        create_table :foos do |t|
-          t.string :name
-        end
-      end
-
-      def self.down
-        drop_table :foos
-      end
+```ruby
+class CreateUsers < ActiveRecord::Migration
+  def up
+    create_table :users do |t|
+      t.string :name
     end
+  end
 
-run the migration
+  def down
+    drop_table :users
+  end
+end
+```
 
-    $ rake db:migrate
+Run the migration:
 
-I like to split models out into a separate `database.rb` file and then
-require it from the main app file, but you can plop
-the following code in about anywhere and it'll work just fine:
+```
+$ rake db:migrate
+```
 
-    require 'sinatra'
-    require 'sinatra/activerecord'
+You can then also write the model:
 
-    # Establish the database connection; or, omit this and use the DATABASE_URL
-    # environment variable or the default sqlite://<environment>.db as the connection string:
-    set :database, 'sqlite://foo.db'
+```ruby
+class User < ActiveRecord::Base
+  validates_presence_of :name
+end
+```
 
-    # At this point, you can access the ActiveRecord::Base class using the
-    # "database" object:
-    puts "the foos table doesn't exist" if !database.table_exists?('foos')
+You can put the models anywhere. It's probably best to put them in an
+external file, and require them in your `app.rb` aftewards. Usually
+models in Sinatra aren't that complex, so you can put them all in one
+file, for example `./db/models.rb`.
 
-    # models just work ...
-    class Foo < ActiveRecord::Base
-    end
+That's it, you're done. Now just establish the database connection in
+your `app.rb` (let's assume you chose the `sqlite3` adapter), and
+require the models if necessary:
 
-    # see:
-    Foo.all
+```ruby
+# app.rb
+require 'sinatra'
+require 'sinatra/activerecord'
 
-    # access the models within the context of an HTTP request
-    get '/foos/:id' do
-      @foo = Foo.find(params[:id])
-      erb :foos
-    end
+require './db/models'
 
-### NOTE about the rip-off
+set :database, 'sqlite://foo.db'
 
-  This Code and README.md is a heavy adaption of [rtomayko's sinatra-sequel](http://github.com/rtomayko/sinatra-sequel/)
+get '/users' do
+  @users = User.all
+  erb :index
+end
 
-Copyright (c) 2009 Blake Mizerany
+get '/users/:id' do
+  @user = User.find(params[:id])
+  erb :show
+end
+```
 
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to deal in the Software without
-restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following
-conditions:
+A nice thing is that the `ActiveRecord::Base` class is available to
+you through the `database` variable. This means that you can write something
+like this:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+```ruby
+if database.table_exists?('users')
+  # Do stuff
+else
+  raise "The table 'users' doesn't exist."
+end
+```
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
+## History
+
+This gem was made in 2009 by Blake Mizerany, one of the authors of Sinatra.
+
+## License
+
+[MIT](https://github.com/janko-m/sinatra-activerecord/blob/master/LICENSE)
