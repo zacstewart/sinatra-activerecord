@@ -20,10 +20,11 @@ them manually):
 - `mysql` (MySQL)
 - `pg` (PostgreSQL)
 
-Then add this to your `Rakefile`:
+Then require the rake tasks and your app in your `Rakefile`:
 
 ```ruby
 require 'sinatra/activerecord/rake'
+require './app'
 ```
 
 In the terminal, test that it works:
