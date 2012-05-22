@@ -2,19 +2,18 @@ require 'bundler'
 
 Bundler::GemHelper.install_tasks
 
-task :default => :test
+task :default => :spec
 
-task :test do
-  Dir["test/**/*_test.rb"].each do |test|
-    system "ruby -Itest #{test}"
-  end
+desc "Run the specs (use spec:name to run a single spec)"
+task :spec do
+  system "rspec -Ispec"
 end
 
 namespace :test do
-  Dir["test/**/*_test.rb"].each do |test|
-    name = test[/\w+(?=_test.rb$)/]
-    task name do
-      system "ruby -Itest #{test}"
+  Dir["spec/**/*_spec.rb"].each do |spec|
+    task_name = File.basename(spec)[/.+(?=_spec\.rb)/]
+    task task_name do
+      system "rspec -Ispec #{spec}"
     end
   end
 end
