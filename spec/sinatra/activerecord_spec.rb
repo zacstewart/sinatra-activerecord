@@ -27,4 +27,13 @@ describe "the sinatra extension" do
     @app.set :database, test_database_url
     @app.database.should respond_to(:table_exists?)
   end
+
+  it "can have the SQLite database in a folder" do
+    FileUtils.mkdir "db"
+    @app.set :database, "sqlite:///db/test.db"
+    @app.database.connection
+    File.exists?('db/test.db').should be_true
+
+    FileUtils.rm_rf 'db'
+  end
 end

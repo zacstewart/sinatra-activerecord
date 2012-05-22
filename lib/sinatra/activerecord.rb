@@ -21,31 +21,15 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        ActiveRecord::Base.establish_connection(database_options)
+        ActiveRecord::Base.establish_connection(fixed_database_url)
         ActiveRecord::Base
       end
     end
 
   protected
 
-    def database_options
-      url = URI.parse(database_url)
-      options = {
-        :adapter => url.scheme,
-        :host => url.host,
-        :port => url.port,
-        :database => url.path[1..-1],
-        :username => url.user,
-        :password => url.password
-      }
-      case url.scheme
-      when "sqlite"
-        options[:adapter] = "sqlite3"
-        options[:database] = url.host
-      when "postgres"
-        options[:adapter] = "postgresql"
-      end
-      options.merge(database_extras)
+    def fixed_database_url
+      database_url.sub('sqlite', 'sqlite3')
     end
 
     def self.registered(app)
