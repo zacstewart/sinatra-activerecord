@@ -5,7 +5,7 @@
 - Added `db:rollback` rake task.
 
 - If you're using SQLite, you can now specify the path to where
-  you want your database file to be. Refer to
+  you want your database file to be (thanks to **@mpalmer** for this). Refer to
   [this wiki](https://github.com/janko-m/sinatra-activerecord/wiki/SQLite).
 
 - Verify connection before requests (a MySQL error which caused the
