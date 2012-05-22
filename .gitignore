@@ -1,3 +1,4 @@
 pkg/
 .rspec
 wiki/
+Gemfile.lock
