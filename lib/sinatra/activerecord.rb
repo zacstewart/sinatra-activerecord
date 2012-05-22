@@ -54,6 +54,11 @@ module Sinatra
       app.set :activerecord_logger, Logger.new(STDOUT)
       app.database # force connection
       app.helpers ActiveRecordHelper
+
+      app.before do
+        # re-connect if database connection dropped
+        ActiveRecord::Base.verify_active_connections!
+      end
     end
   end
 
