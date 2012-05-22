@@ -24,7 +24,7 @@ describe "the sinatra extension" do
   end
 
   it "establishes the database connection when set" do
-    @app.database = test_database_url
+    @app.set :database, test_database_url
     @app.database.should respond_to(:table_exists?)
   end
 end

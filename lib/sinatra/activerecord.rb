@@ -20,7 +20,6 @@ module Sinatra
 
     def database
       @database ||= begin
-        url = URI(database_url)
         ActiveRecord::Base.logger = activerecord_logger
         ActiveRecord::Base.establish_connection(database_options)
         ActiveRecord::Base
@@ -30,7 +29,7 @@ module Sinatra
   protected
 
     def database_options
-      url = URI(database_url)
+      url = URI.parse(database_url)
       options = {
         :adapter => url.scheme,
         :host => url.host,
