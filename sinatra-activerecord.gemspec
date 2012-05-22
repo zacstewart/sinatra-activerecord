@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
 
   gem.license      = "MIT"
 
-  gem.files        = `git ls-files`.split($\)
+  gem.files        = Dir["lib/**/*.rb"] + ["README.md", "LICENSE"]
   gem.require_path = "lib"
   gem.test_files   = gem.files.grep(%r{^(test|spec|features)/})
 
