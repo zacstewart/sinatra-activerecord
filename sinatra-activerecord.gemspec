@@ -18,6 +18,8 @@ Gem::Specification.new do |gem|
   gem.require_path = "lib"
   gem.test_files   = gem.files.grep(%r{^(test|spec|features)/})
 
+  gem.required_ruby_version = ">= 1.9.2"
+
   gem.add_dependency 'sinatra', '~> 1.0'
   gem.add_dependency 'activerecord', '~> 3.0'
 
