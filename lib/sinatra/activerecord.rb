@@ -59,6 +59,10 @@ module Sinatra
         # re-connect if database connection dropped
         ActiveRecord::Base.verify_active_connections!
       end
+
+      app.after do
+        ActiveRecord::Base.clear_active_connections!
+      end
     end
   end
 
