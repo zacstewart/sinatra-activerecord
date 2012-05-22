@@ -3,7 +3,8 @@
 ## About
 
 Extends [Sinatra](http://www.sinatrarb.com/) with extension methods and Rake
-tasks for dealing with an SQL database using the [ActiveRecord ORM](http://api.rubyonrails.org/).
+tasks for dealing with an SQL database using the
+[ActiveRecord ORM](https://github.com/rails/rails/tree/master/activerecord).
 
 ## Instructions
 
