@@ -33,7 +33,7 @@ module Sinatra
     end
 
     def self.registered(app)
-      app.set :database_url, lambda { ENV['DATABASE_URL'] || "sqlite://#{environment}.db" }
+      app.set :database_url, proc { ENV['DATABASE_URL'] || "sqlite://#{environment}.db" }
       app.set :database_extras, Hash.new
       app.set :activerecord_logger, Logger.new(STDOUT)
       app.database # force connection
