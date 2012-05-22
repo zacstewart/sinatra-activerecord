@@ -116,6 +116,11 @@ else
 end
 ```
 
+## Changelog
+
+You can see the changelog
+[here](https://github.com/janko-m/sinatra-activerecord/blob/master/CHANGELOG.md).
+
 ## History
 
 This gem was made in 2009 by Blake Mizerany, one of the authors of Sinatra.
