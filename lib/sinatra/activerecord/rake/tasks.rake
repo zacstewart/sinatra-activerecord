@@ -30,7 +30,7 @@ namespace :db do
     end
   end
 
-  desc "migrate the database"
+  desc "migrate the database (use version with VERSION=n)"
   task :migrate do
     version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
     ActiveRecord::Migrator.migrate('db/migrate', version)
