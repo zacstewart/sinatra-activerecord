@@ -35,4 +35,10 @@ namespace :db do
     version = ENV["VERSION"] ? ENV["VERSION"].to_i : nil
     ActiveRecord::Migrator.migrate('db/migrate', version)
   end
+
+  desc "rolls back the migration (use steps with STEP=n)"
+  task :rollback do
+    step = ENV["STEP"] ? ENV["STEP"].to_i : 1
+    ActiveRecord::Migrator.rollback('db/migrate', step)
+  end
 end

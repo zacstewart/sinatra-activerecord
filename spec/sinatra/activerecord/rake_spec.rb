@@ -96,5 +96,9 @@ describe "rake" do
     end
   end
 
-  # can't test rollback
+  describe "db:rollback" do
+    it "exists" do
+      expect { @rake['db:rollback'] }.to_not raise_error
+    end
+  end
 end
