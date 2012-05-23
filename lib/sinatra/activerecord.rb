@@ -1,5 +1,3 @@
-require 'uri'
-require 'time'
 require 'sinatra/base'
 require 'active_record'
 require 'logger'
@@ -21,16 +19,13 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        ActiveRecord::Base.establish_connection(fixed_database_url)
+        ActiveRecord::Base.establish_connection \
+          database_url.sub('sqlite', 'sqlite3')
         ActiveRecord::Base
       end
     end
 
   protected
-
-    def fixed_database_url
-      database_url.sub('sqlite', 'sqlite3')
-    end
 
     def self.registered(app)
       app.set :database_url, proc { ENV['DATABASE_URL'] || "sqlite://#{environment}.db" }
