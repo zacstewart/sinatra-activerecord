@@ -1,6 +1,12 @@
 # Changelog
 
-## Version 0.2.0
+## Version 0.2.1
+
+- The previous version was yanked, because I forgot to add the
+  `db:rollback` task (I didn't figure out how to test it yet, otherwise
+  I would know it was missing). This version is then actually 0.2.0.
+
+## Version 0.2.0 (yanked)
 
 - Added `db:rollback` rake task.
 
