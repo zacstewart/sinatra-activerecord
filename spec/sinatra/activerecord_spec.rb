@@ -8,18 +8,8 @@ describe "the sinatra extension" do
   let(:test_database_url) { "sqlite://test.db" }
 
   it "exposes the database object" do
+    @app.set :database, test_database_url
     @app.should respond_to(:database)
-  end
-
-  it "uses the DATABASE_URL environment variable if set" do
-    ENV['DATABASE_URL'] = test_database_url
-    @app.database_url.should == test_database_url
-    ENV.delete('DATABASE_URL')
-  end
-
-  it "uses the SQLite url with environment if no DATABASE_URL is defined" do
-    @app.environment = :test
-    @app.database_url.should == test_database_url
   end
 
   it "establishes the database connection when set" do
