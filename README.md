@@ -88,7 +88,7 @@ require 'sinatra/activerecord'
 
 require './db/models'
 
-set :database, 'sqlite://foo.db'
+set :database, 'sqlite:///foo.db'
 ```
 
 Now everything just works:
