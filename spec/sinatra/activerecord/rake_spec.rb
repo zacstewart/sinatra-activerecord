@@ -43,7 +43,7 @@ module RakeTaskHelpers
   end
 end
 
-describe "rake" do
+describe "rake tasks" do
   include RakeTaskHelpers
 
   before(:all) do

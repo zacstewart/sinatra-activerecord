@@ -18,8 +18,7 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        ActiveRecord::Base.establish_connection \
-          database_url.sub('sqlite', 'sqlite3')
+        ActiveRecord::Base.establish_connection(database_url.sub(/^sqlite/, "sqlite3"))
         ActiveRecord::Base
       end
     end
@@ -30,14 +29,9 @@ module Sinatra
       app.set :activerecord_logger, Logger.new(STDOUT)
       app.helpers ActiveRecordHelper
 
-      app.before do
-        # re-connect if database connection dropped
-        ActiveRecord::Base.verify_active_connections!
-      end
-
-      app.after do
-        ActiveRecord::Base.clear_active_connections!
-      end
+      # re-connect if database connection dropped
+      app.before { ActiveRecord::Base.verify_active_connections! }
+      app.after  { ActiveRecord::Base.clear_active_connections! }
     end
   end
 
