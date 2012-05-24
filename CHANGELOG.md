@@ -14,7 +14,7 @@
   after `sqlite:` instead of 2. So instead of `sqlite://database.db` you
   have to write `sqlite:///database.db`. This is now a valid URL.
 
-## Version 0.2.1
+## Version 0.2.1 (yanked)
 
 - The previous version was yanked, because I forgot to add the
   `db:rollback` task (I didn't figure out how to test it yet, otherwise
