@@ -9,8 +9,6 @@ module RakeTaskHelpers
       begin
         ENV['NAME'] = params[:name]
         @rake["db:create_migration"].invoke
-        migration_file = Dir["db/migrate/*"].last
-        File.basename(migration_file)[/^\d+/].to_i # version
       ensure
         ENV.delete('NAME')
         @rake["db:create_migration"].reenable
@@ -19,7 +17,6 @@ module RakeTaskHelpers
       begin
         ENV['VERSION'] = (params[:version] ? params[:version].to_s : nil)
         @rake["db:migrate"].invoke
-        current_version
       ensure
         ENV.delete('VERSION')
         @rake["db:migrate"].reenable
@@ -28,7 +25,6 @@ module RakeTaskHelpers
       begin
         ENV['STEP'] = params[:step]
         @rake["db:rollback"].invoke
-        current_version
       ensure
         ENV.delete('STEP')
         @rake["db:rollback"].reenable
@@ -85,8 +81,9 @@ describe "rake tasks" do
   describe "db:migrate" do
     it "migrates the database" do
       current_version.should == 0
-      version = invoke_task(:create_migration, :name => "create_users")
-      invoke_task(:migrate).should == version
+      invoke_task(:create_migration, :name => "create_users")
+      invoke_task(:migrate)
+      current_version.should_not == 0
       invoke_task(:rollback)
     end
 
