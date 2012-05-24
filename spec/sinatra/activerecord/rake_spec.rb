@@ -96,7 +96,7 @@ describe "rake tasks" do
 
   describe "db:rollback" do
     it "exists" do
-      expect { invoke_task(:rollback) }.to_not raise_error
+      expect { @rake["db:rollback"] }.to_not raise_error
     end
   end
 end
