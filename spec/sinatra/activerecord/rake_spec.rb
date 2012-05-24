@@ -87,16 +87,25 @@ describe "rake tasks" do
       invoke_task(:rollback)
     end
 
-    it "handles VERSION if specified" do
-      first_version = invoke_task(:create_migration, :name => "create_users")
-      second_version = invoke_task(:create_migration, :name => "create_users")
-      invoke_task(:migrate, :version => first_version).should == first_version
-    end
+    # it "handles VERSION if specified" do
+    #   current_version.should == 0
+    #   first_version = invoke_task(:create_migration, :name => "create_users")
+    #   second_version = invoke_task(:create_migration, :name => "create_users")
+    #   invoke_task(:migrate, :version => first_version).should == first_version
+    # end
   end
 
   describe "db:rollback" do
     it "exists" do
       expect { @rake["db:rollback"] }.to_not raise_error
     end
+
+    # it "rolls back the database" do
+    #   invoke_task(:create_migration, :name => "create_users")
+    #   invoke_task(:migrate)
+    #   current_version.should_not == 0
+    #   invoke_task(:rollback)
+    #   current_version.should == 0
+    # end
   end
 end
