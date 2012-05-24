@@ -87,6 +87,7 @@ describe "rake tasks" do
       current_version.should == 0
       version = invoke_task(:create_migration, :name => "create_users")
       invoke_task(:migrate).should == version
+      invoke_task(:rollback)
     end
 
     it "handles VERSION if specified" do
@@ -98,7 +99,7 @@ describe "rake tasks" do
 
   describe "db:rollback" do
     it "exists" do
-      expect { @rake['db:rollback'] }.to_not raise_error
+      expect { invoke_task(:rollback) }.to_not raise_error
     end
   end
 end
