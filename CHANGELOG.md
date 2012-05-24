@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 1.0.0
+
+- Fixed the database not working. Sorry, I won't let it happen again.
+
+### Changes that are NOT backwards compatible
+
+- There is no more "default" database. Now you always have to specify
+  the database you want to connect to, it doesn't default to
+  `"sqlite://#{environment}.db"` anymore.
+
+- When you're setting an SQLite database, you now have to put 3 slashes
+  after `sqlite:` instead of 2. So instead of `sqlite://database.db` you
+  have to write `sqlite:///database.db`. This is now a valid URL.
+
 ## Version 0.2.1
 
 - The previous version was yanked, because I forgot to add the
