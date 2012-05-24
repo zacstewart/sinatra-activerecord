@@ -5,7 +5,7 @@ describe "the sinatra extension" do
     @app = Class.new(MockSinatraApp)
   end
 
-  let(:test_database_url) { "sqlite://test.db" }
+  let(:test_database_url) { "sqlite:///foo.db" }
 
   it "exposes the database object" do
     @app.set :database, test_database_url
@@ -19,9 +19,9 @@ describe "the sinatra extension" do
 
   it "can have the SQLite database in a folder" do
     FileUtils.mkdir "db"
-    @app.set :database, "sqlite:///db/test.db"
+    @app.set :database, "sqlite:///db/foo.db"
     @app.database.connection
-    File.exists?('db/test.db').should be_true
+    File.exists?('db/foo.db').should be_true
 
     FileUtils.rm_rf 'db'
   end

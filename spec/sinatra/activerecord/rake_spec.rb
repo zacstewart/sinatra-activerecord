@@ -54,7 +54,7 @@ describe "rake tasks" do
     # disable ActiveRecord logging
     app = Class.new(MockSinatraApp)
     app.activerecord_logger = nil
-    app.database = "sqlite://test.db"
+    app.set :database, "sqlite:///foo.db"
   end
 
   around(:each) do |example|
@@ -66,7 +66,7 @@ describe "rake tasks" do
 
   after(:each) do
     FileUtils.rm_rf("db")
-    FileUtils.rm("test.db") rescue nil
+    FileUtils.rm("foo.db") rescue nil
   end
 
   describe "db:create_migration" do
