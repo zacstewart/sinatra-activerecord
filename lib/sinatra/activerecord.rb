@@ -5,7 +5,7 @@ require 'logger'
 module Sinatra
   module ActiveRecordHelper
     def database
-      options.database
+      settings.database
     end
   end
 
