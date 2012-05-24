@@ -49,7 +49,7 @@ describe "rake tasks" do
   before(:all) do
     @rake = Rake::Application.new
     Rake.application = @rake
-    Rake.application.rake_require 'sinatra/activerecord/rake/tasks'
+    Rake.application.rake_require 'sinatra/activerecord/rake_tasks'
 
     # disable ActiveRecord logging
     app = Class.new(MockSinatraApp)

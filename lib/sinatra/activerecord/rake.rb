@@ -1,1 +1,1 @@
-load 'sinatra/activerecord/rake/tasks.rake'
+load 'sinatra/activerecord/rake_tasks.rake'
