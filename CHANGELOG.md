@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.0.1
+
+- Removed deprecation warnings when using the `database` helper.
+
 ## Version 1.0.0
 
 - Fixed the database not working. Sorry, I won't let it happen again.
