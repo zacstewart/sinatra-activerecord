@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.1.0
+
+- If no database is specified, it will try to read from the `DATABASE_URL`
+  environment variable (which is often set in production). This was
+  removed in 1.0.0, but now I'm bringing it back.
+
 ## Version 1.0.1
 
 - Removed deprecation warnings when using the `#database` helper.
