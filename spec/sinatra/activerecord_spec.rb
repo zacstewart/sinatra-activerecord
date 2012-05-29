@@ -3,6 +3,7 @@ require 'spec_helper'
 describe "the sinatra extension" do
   before(:each) do
     @app = Class.new(MockSinatraApp)
+    ActiveRecord::Base.remove_connection
   end
 
   let(:test_database_url) { "sqlite:///foo.db" }
@@ -32,5 +33,25 @@ describe "the sinatra extension" do
     File.exists?('db/foo.db').should be_true
 
     FileUtils.rm_rf 'db'
+  end
+
+  it "establishes the connection if DATABASE_URL is set" do
+    ENV['DATABASE_URL'] = test_database_url
+    app = Class.new(Sinatra::Base) do
+      register Sinatra::ActiveRecordExtension
+    end
+    expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::ConnectionNotEstablished)
+
+    ENV.delete('DATABASE_URL')
+    FileUtils.rm 'foo.db'
+  end
+
+  it "doesn't establish the connection if DATABASE_URL isn't set" do
+    app = Class.new(MockSinatraApp)
+    expect { ActiveRecord::Base.connection }.to raise_error(ActiveRecord::ConnectionNotEstablished)
+  end
+
+  it "raises an ActiveRecord error if database and DATABASE_URL aren't set" do
+    expect { @app.database }.to raise_error(ActiveRecord::AdapterNotSpecified)
   end
 end
