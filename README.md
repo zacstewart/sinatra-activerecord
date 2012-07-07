@@ -46,7 +46,7 @@ require 'sinatra/activerecord/rake'
 require './app'
 ```
 
-In the terminal, test that it works:
+In the Terminal test that it works:
 
 ```
 $ rake -T
@@ -91,7 +91,7 @@ end
 ```
 
 You can put the models anywhere. It's probably best to put them in an
-external file, and require them in your `app.rb` aftewards. Usually
+external file, and require them in your `app.rb`. Usually
 models in Sinatra aren't that complex, so you can put them all in one
 file, for example `./db/models.rb`.
 
