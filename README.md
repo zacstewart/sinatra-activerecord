@@ -21,7 +21,25 @@ them manually):
 - `mysql` (MySQL)
 - `pg` (PostgreSQL)
 
-Then require the rake tasks and your app in your `Rakefile`:
+Now specify the database in your `app.rb`
+(let's assume you chose the `sqlite3` adapter):
+
+```ruby
+# app.rb
+require 'sinatra'
+require 'sinatra/activerecord'
+
+set :database, 'sqlite:///foo.db'
+```
+
+Note that in modular Sinatra applications (ones in which you explicitly
+subclass `Sinatra::Base`), you will need to manually add the line:
+
+```ruby
+register Sinatra::ActiveRecordExtension
+```
+
+Now require the rake tasks and your app in your `Rakefile`:
 
 ```ruby
 require 'sinatra/activerecord/rake'
@@ -76,20 +94,6 @@ You can put the models anywhere. It's probably best to put them in an
 external file, and require them in your `app.rb` aftewards. Usually
 models in Sinatra aren't that complex, so you can put them all in one
 file, for example `./db/models.rb`.
-
-Now just establish the database connection in your `app.rb`
-(let's assume you chose the `sqlite3` adapter), and
-require the models if necessary:
-
-```ruby
-# app.rb
-require 'sinatra'
-require 'sinatra/activerecord'
-
-require './db/models'
-
-set :database, 'sqlite:///foo.db'
-```
 
 Now everything just works:
 
