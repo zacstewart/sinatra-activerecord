@@ -32,7 +32,7 @@ require 'sinatra/activerecord'
 set :database, 'sqlite:///foo.db'
 ```
 
-Note that in modular Sinatra applications (ones in which you explicitly
+Note that in **modular** Sinatra applications (ones in which you explicitly
 subclass `Sinatra::Base`), you will need to manually add the line:
 
 ```ruby
