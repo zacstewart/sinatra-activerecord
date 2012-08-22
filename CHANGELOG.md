@@ -2,9 +2,11 @@
 
 ## Version 1.1.1
 
+- The database is now reset whenever you specify it with `set :database`.
+
 - The `set :database` command now accepts everything that
-  `ActiveRecord::Base.establish_connection` accepts. Now you can specify the
-  database with a hash, not just with the database URL:
+  `ActiveRecord::Base.establish_connection` accepts. A Hash
+  is one example:
 
 ```ruby
 set :database, {
