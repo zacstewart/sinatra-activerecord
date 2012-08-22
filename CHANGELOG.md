@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 1.1.1
+
+- The `set :database` command now accepts everything that
+  `ActiveRecord::Base.establish_connection` accepts. Now you can specify the
+  database with a hash, not just with the database URL:
+
+```ruby
+set :database, {
+  adapter: "sqlite3",
+  database: "db/foo.db",
+  pool: 5,
+  timeout: 5000
+}
+```
+
 ## Version 1.1.0
 
 - If no database is specified, it will try to read from the `DATABASE_URL`
