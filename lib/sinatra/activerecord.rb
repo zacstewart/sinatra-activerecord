@@ -18,8 +18,8 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        url = database_url.sub(/^sqlite/, "sqlite3") rescue nil
-        ActiveRecord::Base.establish_connection(url)
+        spec = database_url.is_a?(String) ? database_url.sub(/^sqlite:/, "sqlite3:") : database_url
+        ActiveRecord::Base.establish_connection(spec)
         ActiveRecord::Base
       end
     end

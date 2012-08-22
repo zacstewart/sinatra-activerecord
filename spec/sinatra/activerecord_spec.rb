@@ -54,4 +54,12 @@ describe "the sinatra extension" do
   it "raises an ActiveRecord error if database and DATABASE_URL aren't set" do
     expect { @app.database }.to raise_error(ActiveRecord::AdapterNotSpecified)
   end
+
+  it "accepts a hash for the database" do
+    @app.set :database, {adapter: "sqlite3", database: "foo.db", pool: 5, timeout: 5000}
+    @app.database.connection
+    File.exists?('foo.db').should be_true
+
+    FileUtils.rm 'foo.db'
+  end
 end
