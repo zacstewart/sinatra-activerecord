@@ -2,8 +2,6 @@
 
 ## Version 1.1.1
 
-- The database is now reset whenever you specify it with `set :database`.
-
 - The `set :database` command now accepts everything that
   `ActiveRecord::Base.establish_connection` accepts. A Hash
   is one example:
@@ -16,6 +14,9 @@ set :database, {
   timeout: 5000
 }
 ```
+
+- The database is now reset whenever you specify it with `set :database`.
+- The migrations are now logged just like in Rails.
 
 ## Version 1.1.0
 

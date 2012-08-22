@@ -28,19 +28,30 @@ module Sinatra
     end
 
     def migrate(version = nil)
-      migration_version = version ? version.to_i : version
-      ActiveRecord::Migrator.migrate(migrations_dir, migration_version)
+      silence_activerecord do
+        migration_version = version ? version.to_i : version
+        ActiveRecord::Migrator.migrate(migrations_dir, migration_version)
+      end
     end
 
     def rollback(step = nil)
-      migration_step = step ? step.to_i : 1
-      ActiveRecord::Migrator.rollback(migrations_dir, migration_step)
+      silence_activerecord do
+        migration_step = step ? step.to_i : 1
+        ActiveRecord::Migrator.rollback(migrations_dir, migration_step)
+      end
     end
 
     private
 
     def migrations_dir
       "db/migrate"
+    end
+
+    def silence_activerecord(&block)
+      old_logger = ActiveRecord::Base.logger
+      ActiveRecord::Base.logger = nil
+      yield if block_given?
+      ActiveRecord::Base.logger = old_logger
     end
   end
 end
