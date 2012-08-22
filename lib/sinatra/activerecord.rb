@@ -12,6 +12,7 @@ module Sinatra
   module ActiveRecordExtension
     def database=(url)
       set :database_url, url
+      @database = nil
       database
     end
 
