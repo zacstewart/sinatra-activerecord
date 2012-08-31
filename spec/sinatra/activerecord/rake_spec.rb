@@ -9,6 +9,10 @@ describe "rake tasks" do
     ActiveRecord::Migrator.current_version
   end
 
+  before(:all) do
+    ActiveRecord::Migration.verbose = false
+  end
+
   before(:each) do
     FileUtils.rm_rf("db")
     FileUtils.rm("foo.db") if File.exists?("foo.db")
@@ -63,5 +67,9 @@ describe "rake tasks" do
       rollback(2)
       current_version.should == 0
     end
+  end
+
+  after(:all) do
+    ActiveRecord::Migration.verbose = true
   end
 end
