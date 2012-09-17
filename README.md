@@ -29,7 +29,7 @@ Now specify the database in your `app.rb`
 require 'sinatra'
 require 'sinatra/activerecord'
 
-set :database, 'sqlite:///foo.db'
+set :database, 'sqlite3:///foo.db'
 ```
 
 Note that in **modular** Sinatra applications (ones in which you explicitly
