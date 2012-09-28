@@ -32,6 +32,9 @@ require 'sinatra/activerecord'
 set :database, 'sqlite3:///foo.db'
 ```
 
+Note that the database URL here has **3** slashes. This is the difference from
+<= 1.0.0 versions, where it was typed with 2 slashes.
+
 Note that in **modular** Sinatra applications (ones in which you explicitly
 subclass `Sinatra::Base`), you will need to manually add the line:
 
