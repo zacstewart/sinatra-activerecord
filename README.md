@@ -133,6 +133,10 @@ You can see the changelog
 
 This gem was made in 2009 by Blake Mizerany, one of the authors of Sinatra.
 
+## Social
+
+You can follow me on Twitter, I'm [@m_janko](http://twitter.com/m_janko)
+
 ## License
 
 [MIT](https://github.com/janko-m/sinatra-activerecord/blob/master/LICENSE)
