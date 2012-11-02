@@ -3,7 +3,7 @@ require 'sinatra/base'
 require 'sinatra/activerecord'
 
 describe "the sinatra extension" do
-  let(:database_url) { "sqlite:///foo.db" }
+  let(:database_url) { "sqlite3:///foo.db" }
 
   before(:each) do
     @app = Class.new(Sinatra::Base) { register Sinatra::ActiveRecordExtension }
@@ -47,8 +47,13 @@ describe "the sinatra extension" do
 
     it "can have the SQLite database in a folder" do
       FileUtils.mkdir("db")
-      @app.set :database, "sqlite:///db/foo.db"
+      @app.set :database, "sqlite3:///db/foo.db"
       expect { @app.database.connection }.to_not raise_error(SQLite3::CantOpenException)
+    end
+
+    it "accepts SQLite database URLs without the '3'" do
+      @app.set :database, "sqlite:///foo.db"
+      expect { @app.database.connection }.to_not raise_error(ActiveRecord::AdapterNotFound)
     end
 
     it "accepts a hash for the database" do

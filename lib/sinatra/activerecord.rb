@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'active_record'
 require 'logger'
+require 'active_support/core_ext/string/strip'
 
 module Sinatra
   module ActiveRecordHelper
@@ -19,7 +20,7 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        spec = database_url.is_a?(String) ? database_url.sub(/^sqlite:/, "sqlite3:") : database_url
+        spec = resolve_spec(database_url)
         ActiveRecord::Base.establish_connection(spec)
         ActiveRecord::Base
       end
@@ -36,6 +37,22 @@ module Sinatra
       # re-connect if database connection dropped
       app.before { ActiveRecord::Base.verify_active_connections! }
       app.after  { ActiveRecord::Base.clear_active_connections! }
+    end
+
+  private
+
+    def resolve_spec(database_url)
+      if database_url.is_a?(String)
+        if database_url =~ %r{^sqlite3?://[A-Za-z_-]+\.(db|sqlite3?)$}
+          warn <<-MESSAGE.strip_heredoc
+            It seems your database URL looks something like this: "sqlite3://<database_name>".
+            This doesn't work anymore, you need to use 3 slashes, like this: "sqlite3:///<database_name>".
+          MESSAGE
+        end
+        database_url.sub(/^sqlite:/, "sqlite3:")
+      else
+        database_url
+      end
     end
   end
 
