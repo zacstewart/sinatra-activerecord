@@ -51,7 +51,7 @@ require './app'
 
 In the Terminal test that it works:
 
-```
+```sh
 $ rake -T
 rake db:create_migration  # create an ActiveRecord migration in ./db/migrate
 rake db:migrate           # migrate your database
@@ -59,7 +59,7 @@ rake db:migrate           # migrate your database
 
 Now you can create a migration:
 
-```
+```sh
 $ rake db:create_migration NAME=create_users
 ```
 
@@ -81,7 +81,7 @@ end
 
 After you've written the migration, migrate the database:
 
-```
+```sh
 $ rake db:migrate
 ```
 
