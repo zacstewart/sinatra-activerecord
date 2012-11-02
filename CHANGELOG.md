@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.1.2
+
+- Users are now warned if they use SQLite URLs with 2 slashes.
+
 ## Version 1.1.1
 
 - The `set :database` command now accepts everything that
