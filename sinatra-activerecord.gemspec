@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.summary      = gem.description
   gem.homepage     = "http://github.com/janko-m/sinatra-activerecord"
 
-  gem.author       = "Janko Marohnić"
+  gem.authors      = ["Blake Mizerany", "Janko Marohnić"]
   gem.email        = "janko.marohnic@gmail.com"
 
   gem.license      = "MIT"
