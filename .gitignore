@@ -2,3 +2,4 @@ pkg/
 .rspec
 wiki/
 Gemfile.lock
+.DS_Store
