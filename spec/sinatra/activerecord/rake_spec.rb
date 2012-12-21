@@ -10,12 +10,12 @@ describe "Rake tasks" do
   end
 
   before(:each) do
-    FileUtils.rm_rf("db/migrate")
     FileUtils.mkdir_p("tmp")
     FileUtils.rm_rf("tmp/foo.sqlite3")
 
     ActiveRecord::Base.remove_connection
     ActiveRecord::Base.establish_connection("sqlite3:///tmp/foo.sqlite3")
+    ActiveRecord::Migrator.migrations_paths = "tmp"
   end
 
   around(:each) do |example|
@@ -29,6 +29,16 @@ describe "Rake tasks" do
     FileUtils.rm_rf("tmp")
   end
 
+  it "uses ActiveRecord::Migrator.migrations_paths for the migration directory" do
+    ActiveRecord::Migrator.migrations_paths = "foo"
+    expect {
+      create_migration("create_users")
+    }.to change{Dir["foo/*"].any?}.from(false).to(true)
+    expect { migrate }.to change{schema_version}
+    expect { rollback }.to change{schema_version}
+    FileUtils.rm_rf("foo")
+  end
+
   describe "db:create_migration" do
     it "aborts if NAME is not specified" do
       expect { create_migration(nil) }.to raise_error
@@ -36,7 +46,7 @@ describe "Rake tasks" do
 
     it "creates the migration file" do
       create_migration("create_users")
-      migration_file = Dir["db/migrate/*"].first
+      migration_file = Dir["tmp/*"].first
       migration_file.should match(/\d+_create_users\.rb$/)
     end
   end

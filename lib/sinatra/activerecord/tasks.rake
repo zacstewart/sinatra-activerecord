@@ -1,7 +1,7 @@
 require 'rake'
 
 namespace :db do
-  desc "create an ActiveRecord migration in ./db/migrate"
+  desc "create an ActiveRecord migration"
   task :create_migration do
     Sinatra::ActiveRecordTasks.create_migration(ENV["NAME"], ENV["VERSION"])
   end
