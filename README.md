@@ -1,52 +1,42 @@
 # Sinatra ActiveRecord Extension
 
-## About
-
 Extends [Sinatra](http://www.sinatrarb.com/) with extension methods and Rake
 tasks for dealing with an SQL database using the
 [ActiveRecord ORM](https://github.com/rails/rails/tree/master/activerecord).
 
-## Instructions
+## Setup
 
-First, put the gem into your `Gemfile` (or install it manually):
+Put it in your `Gemfile`, along with the adapter of your database. For
+simplicity, let's assume you're using SQLite:
 
 ```ruby
-gem 'sinatra-activerecord'
+gem "sinatra-activerecord"
+gem "sqlite3"
 ```
 
-Also put one of the database adapters into your `Gemfile` (or install
-them manually):
-
-- `sqlite3` (SQLite)
-- `mysql` (MySQL)
-- `pg` (PostgreSQL)
-
-Now specify the database in your `app.rb`
-(let's assume you chose the `sqlite3` adapter):
+Now require it in your Sinatra application, and establish the database
+connection:
 
 ```ruby
-# app.rb
-require 'sinatra'
-require 'sinatra/activerecord'
+require "sinatra/activerecord"
 
-set :database, 'sqlite3:///foo.db'
+set :database, "sqlite3:///foo.sqlite3"
 ```
 
-Note that the database URL here has **3** slashes. This is the difference from
-<= 1.0.0 versions, where it was typed with 2 slashes.
-
-Also note that in **modular** Sinatra applications (ones in which you explicitly
-subclass `Sinatra::Base`), you will need to manually add the line:
+Note that in **modular** Sinatra applications you will need to first register
+the extension:
 
 ```ruby
-register Sinatra::ActiveRecordExtension
+class YourApplication < Sinatra::Base
+  register Sinatra::ActiveRecordExtension
+end
 ```
 
 Now require the rake tasks and your app in your `Rakefile`:
 
 ```ruby
-require 'sinatra/activerecord/rake'
-require './app'
+require "sinatra/activerecord/rake"
+require "./app"
 ```
 
 In the Terminal test that it works:
@@ -54,10 +44,15 @@ In the Terminal test that it works:
 ```sh
 $ rake -T
 rake db:create_migration  # create an ActiveRecord migration in ./db/migrate
-rake db:migrate           # migrate your database
+rake db:migrate           # migrate the database (use version with VERSION=n)
+rake db:rollback          # roll back the migration (use steps with STEP=n)
 ```
 
-Now you can create a migration:
+And that's it, you're all set :)
+
+## Usage
+
+You can create a migration:
 
 ```sh
 $ rake db:create_migration NAME=create_users
@@ -67,25 +62,21 @@ This will create a migration file in the `./db/migrate` folder, ready for editin
 
 ```ruby
 class CreateUsers < ActiveRecord::Migration
-  def up
+  def change
     create_table :users do |t|
       t.string :name
     end
   end
-
-  def down
-    drop_table :users
-  end
 end
 ```
 
-After you've written the migration, migrate the database:
+Now migrate the database:
 
 ```sh
 $ rake db:migrate
 ```
 
-You can then also write the model:
+You can also write models:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -93,10 +84,9 @@ class User < ActiveRecord::Base
 end
 ```
 
-You can put the models anywhere. It's probably best to put them in an
-external file, and require them in your `app.rb`. Usually
-models in Sinatra aren't that complex, so you can put them all in one
-file, for example `./db/models.rb`.
+You can put your models anywhere you want. If you put them in a separate file,
+just remember to require the file, and to load the models **after** requiring
+`"sinatra/activerecord"`.
 
 Now everything just works:
 
@@ -113,8 +103,7 @@ end
 ```
 
 A nice thing is that the `ActiveRecord::Base` class is available to
-you through the `database` variable. This means that you can write something
-like this:
+you through the `database` variable:
 
 ```ruby
 if database.table_exists?('users')
@@ -124,14 +113,9 @@ else
 end
 ```
 
-## Changelog
-
-You can see the changelog
-[here](https://github.com/janko-m/sinatra-activerecord/blob/master/CHANGELOG.md).
-
 ## History
 
-This gem was made in 2009 by Blake Mizerany, one of the authors of Sinatra.
+This gem was made in 2009 by Blake Mizerany, creator of Sinatra.
 
 ## Social
 

@@ -2,22 +2,31 @@ require 'spec_helper'
 require 'sinatra/activerecord/rake'
 require 'fileutils'
 
-describe "rake tasks" do
+describe "Rake tasks" do
   include Sinatra::ActiveRecordTasks
 
-  def current_version
+  def schema_version
     ActiveRecord::Migrator.current_version
   end
 
-  before(:all) do
-    ActiveRecord::Migration.verbose = false
+  before(:each) do
+    FileUtils.rm_rf("db/migrate")
+    FileUtils.mkdir_p("tmp")
+    FileUtils.rm_rf("tmp/foo.sqlite3")
+
+    ActiveRecord::Base.remove_connection
+    ActiveRecord::Base.establish_connection("sqlite3:///tmp/foo.sqlite3")
   end
 
-  before(:each) do
+  around(:each) do |example|
+    ActiveRecord::Migration.verbose = false
+    example.run
+    ActiveRecord::Migration.verbose = true
+  end
+
+  after(:each) do
     FileUtils.rm_rf("db")
-    FileUtils.rm("foo.db") if File.exists?("foo.db")
-    ActiveRecord::Base.remove_connection
-    ActiveRecord::Base.establish_connection("sqlite3:///foo.db")
+    FileUtils.rm_rf("tmp")
   end
 
   describe "db:create_migration" do
@@ -33,43 +42,40 @@ describe "rake tasks" do
   end
 
   describe "db:migrate" do
+    it "aborts if connection isn't established" do
+      ActiveRecord::Base.remove_connection
+      expect { migrate }.to raise_error(ActiveRecord::ConnectionNotEstablished)
+    end
+
     it "migrates the database" do
-      current_version.should == 0
       create_migration("create_users")
-      migrate
-      current_version.should_not == 0
+      expect { migrate }.to change{schema_version}
     end
 
     it "handles VERSION if specified" do
-      current_version.should == 0
       create_migration("create_users", 1)
       create_migration("create_books", 2)
-      migrate(1)
-      current_version.should == 1
+      expect { migrate(1) }.to change{schema_version}.to(1)
     end
   end
 
   describe "db:rollback" do
+    it "aborts if connection isn't established" do
+      ActiveRecord::Base.remove_connection
+      expect { rollback }.to raise_error(ActiveRecord::ConnectionNotEstablished)
+    end
+
     it "rolls back the database" do
-      current_version.should == 0
       create_migration("create_users")
-      migrate
-      current_version.should_not == 0
-      rollback
-      current_version.should == 0
+      expect { migrate }.to change{schema_version}.from(0)
+      expect { rollback }.to change{schema_version}.to(0)
     end
 
     it "handles STEP if specified" do
-      current_version.should == 0
       create_migration("create_users", 1)
       create_migration("create_students", 2)
       migrate
-      rollback(2)
-      current_version.should == 0
+      expect { rollback(2) }.to change{schema_version}.to(0)
     end
-  end
-
-  after(:all) do
-    ActiveRecord::Migration.verbose = true
   end
 end

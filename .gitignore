@@ -3,3 +3,4 @@ pkg/
 wiki/
 Gemfile.lock
 .DS_Store
+tmp/

@@ -3,63 +3,49 @@ require 'sinatra/base'
 require 'sinatra/activerecord'
 
 describe "the sinatra extension" do
-  let(:database_url) { "sqlite3:///foo.db" }
+  let(:database_url) { "sqlite3:///tmp/foo.sqlite3" }
 
   before(:each) do
-    @app = Class.new(Sinatra::Base) { register Sinatra::ActiveRecordExtension }
+    FileUtils.mkdir_p("tmp")
+    FileUtils.rm_rf("tmp/foo.sqlite3")
+
     ActiveRecord::Base.remove_connection
+    @app = Class.new(Sinatra::Base) { register Sinatra::ActiveRecordExtension }
   end
 
   after(:each) do
-    FileUtils.rm_rf("db")
-    FileUtils.rm("foo.db") if File.exists?("foo.db")
+    FileUtils.rm_rf("tmp")
   end
 
-  context "DATABASE_URL isn't set" do
-    it "exposes the database object" do
+  it "exposes the database object" do
+    @app.should respond_to(:database)
+  end
+
+  it "raises the proper error when trying to establish connection with a nonexisting database" do
+    expect { @app.database }.to raise_error(ActiveRecord::AdapterNotSpecified)
+  end
+
+  it "establishes the database connection when set" do
+    @app.set :database, database_url
+    expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::ConnectionNotEstablished)
+    expect {
       @app.set :database, database_url
-      @app.should respond_to(:database)
-    end
+    }.to change{ActiveRecord::Base.connection.last_use}
+  end
 
-    it "raises the proper error when trying to establish connection with a nonexisting database" do
-      expect { @app.database }.to raise_error(ActiveRecord::AdapterNotSpecified)
-    end
+  it "can have the SQLite database in a folder" do
+    @app.set :database, "sqlite3:///tmp/foo.sqlite3"
+    expect { ActiveRecord::Base.connection }.to_not raise_error(SQLite3::CantOpenException)
+  end
 
-    it "establishes the database connection when set" do
-      @app.set :database, database_url
-      expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::ConnectionNotEstablished)
-      last_use = @app.database.connection.last_use.to_f
-      @app.set :database, database_url
-      @app.database.connection.last_use.to_f.should > last_use
-    end
+  it "accepts SQLite database URLs without the '3'" do
+    @app.set :database, "sqlite:///tmp/foo.sqlite3"
+    expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::AdapterNotFound)
+  end
 
-    it "caches the database variable" do
-      @app.set :database, database_url
-      last_use = @app.database.connection.last_use.to_f
-      @app.database.connection.last_use.to_f.should == last_use
-    end
-
-    it "creates the database file" do
-      @app.set :database, database_url
-      @app.database.connection
-      File.should exist('foo.db')
-    end
-
-    it "can have the SQLite database in a folder" do
-      FileUtils.mkdir("db")
-      @app.set :database, "sqlite3:///db/foo.db"
-      expect { @app.database.connection }.to_not raise_error(SQLite3::CantOpenException)
-    end
-
-    it "accepts SQLite database URLs without the '3'" do
-      @app.set :database, "sqlite:///foo.db"
-      expect { @app.database.connection }.to_not raise_error(ActiveRecord::AdapterNotFound)
-    end
-
-    it "accepts a hash for the database" do
-      expect { @app.set :database, {} }.to raise_error(ActiveRecord::AdapterNotSpecified)
-      expect { @app.set :database, {adapter: "sqlite3"} }.to_not raise_error(ActiveRecord::AdapterNotSpecified)
-    end
+  it "accepts a hash for the database" do
+    expect { @app.set :database, {} }.to raise_error(ActiveRecord::AdapterNotSpecified)
+    expect { @app.set :database, {adapter: "sqlite3"} }.to_not raise_error(ActiveRecord::AdapterNotSpecified)
   end
 
   context "DATABASE_URL is set" do
