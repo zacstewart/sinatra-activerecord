@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 1.2.0
+
+- You can now set a custom migrations directory. Take a look at
+[this wiki](https://github.com/janko-m/sinatra-activerecord/wiki/Changing-the-migrations-directory).
+
+- You can now set the database to a YAML file. Take a look at
+[this wiki](https://github.com/janko-m/sinatra-activerecord/wiki/Alternative-database-setup).
+
 ## Version 1.1.2
 
 - Users are now warned if they use SQLite URLs with 2 slashes.
