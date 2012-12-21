@@ -5,12 +5,19 @@ require 'sinatra/activerecord'
 describe "the sinatra extension" do
   let(:database_url) { "sqlite3:///tmp/foo.sqlite3" }
 
+  def new_sinatra_application
+    Class.new(Sinatra::Base) do
+      set :app_file, File.join(ROOT, "tmp")
+      register Sinatra::ActiveRecordExtension
+    end
+  end
+
   before(:each) do
     FileUtils.mkdir_p("tmp")
     FileUtils.rm_rf("tmp/foo.sqlite3")
 
     ActiveRecord::Base.remove_connection
-    @app = Class.new(Sinatra::Base) { register Sinatra::ActiveRecordExtension }
+    @app = new_sinatra_application
   end
 
   after(:each) do
@@ -26,8 +33,9 @@ describe "the sinatra extension" do
   end
 
   it "establishes the database connection when set" do
-    @app.set :database, database_url
-    expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::ConnectionNotEstablished)
+    expect {
+      @app.set :database, database_url
+    }.to change{ActiveRecord::Base.connected?}.to(true)
     expect {
       @app.set :database, database_url
     }.to change{ActiveRecord::Base.connection.last_use}
@@ -44,8 +52,28 @@ describe "the sinatra extension" do
   end
 
   it "accepts a hash for the database" do
-    expect { @app.set :database, {} }.to raise_error(ActiveRecord::AdapterNotSpecified)
-    expect { @app.set :database, {adapter: "sqlite3"} }.to_not raise_error(ActiveRecord::AdapterNotSpecified)
+    expect {
+      @app.set :database, {adapter: "sqlite3", database: "tmp/foo.sqlite3"}
+    }.to change{ActiveRecord::Base.connected?}.to(true)
+  end
+
+  describe "database file" do
+    it "accepts a filename for the database" do
+      FileUtils.mkdir_p("tmp")
+      FileUtils.cp("spec/fixtures/database.yml", "tmp")
+      expect {
+        @app.set :database_file, "database.yml"
+      }.to change{ActiveRecord::Base.connected?}.to(true)
+    end
+
+    it "doesn't raise errors on missing #app_file" do
+      @app.set :app_file, nil
+      expect { @app.set :database_file, "database.yml" }.to_not raise_error
+    end
+
+    it "doesn't raise errors on missing file" do
+      expect { @app.set :database_file, "database.yml" }.to_not raise_error
+    end
   end
 
   context "DATABASE_URL is set" do
@@ -53,8 +81,19 @@ describe "the sinatra extension" do
     after(:all) { ENV.delete("DATABASE_URL") }
 
     it "establishes the connection upon registering" do
-      app = Class.new(Sinatra::Base) { register Sinatra::ActiveRecordExtension }
-      expect { ActiveRecord::Base.connection }.to_not raise_error(ActiveRecord::ConnectionNotEstablished)
+      ActiveRecord::Base.remove_connection
+      expect {
+        @app = new_sinatra_application
+      }.to change{ActiveRecord::Base.connected?}.to(true)
+    end
+
+    it "is overriden by config/database.yml" do
+      FileUtils.mkdir_p("tmp/config")
+      FileUtils.touch("tmp/config/database.yml")
+
+      expect {
+        @app = new_sinatra_application
+      }.to raise_error(ActiveRecord::AdapterNotSpecified)
     end
   end
 end

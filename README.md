@@ -23,6 +23,9 @@ require "sinatra/activerecord"
 set :database, "sqlite3:///foo.sqlite3"
 ```
 
+Alternatively, you can set the database with a hash or a YAML file. Take a look at
+[this wiki](https://github.com/janko-m/sinatra-activerecord/wiki/Alternative-database-setup).
+
 Note that in **modular** Sinatra applications you will need to first register
 the extension:
 

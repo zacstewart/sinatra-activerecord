@@ -20,18 +20,35 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        spec = resolve_spec(database_url)
-        ActiveRecord::Base.establish_connection(spec)
+        ActiveRecord::Base.establish_connection(resolve_spec(database_url))
+        ActiveRecord::Base.connection
         ActiveRecord::Base
       end
     end
 
-  protected
+    def database_file=(path)
+      require 'pathname'
+
+      return if app_file.nil?
+      path = File.join(app_file, path) if Pathname.new(path).relative?
+
+      if File.exists?(path)
+        require 'yaml'
+        require 'erb'
+
+        database_hash = YAML.load(ERB.new(File.read(path)).result) || {}
+        database_hash = database_hash[environment] if database_hash[environment]
+        set :database, database_hash
+      end
+    end
+
+    protected
 
     def self.registered(app)
       app.set :activerecord_logger, Logger.new(STDOUT)
       app.set :database_url, ENV['DATABASE_URL']
-      app.database if ENV['DATABASE_URL'] # Force connection if DATABASE_URL is set
+      app.set :database_file, "config/database.yml"
+      app.database if app.database_url
       app.helpers ActiveRecordHelper
 
       # re-connect if database connection dropped
@@ -39,7 +56,7 @@ module Sinatra
       app.after  { ActiveRecord::Base.clear_active_connections! }
     end
 
-  private
+    private
 
     def resolve_spec(database_url)
       if database_url.is_a?(String)
