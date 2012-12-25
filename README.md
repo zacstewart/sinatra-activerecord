@@ -88,9 +88,8 @@ class User < ActiveRecord::Base
 end
 ```
 
-You can put your models anywhere you want. If you put them in a separate file,
-just remember to require the file, and to load the models **after** requiring
-`"sinatra/activerecord"`.
+You can put your models anywhere you want, only remember to require them if
+they're in a separate file, and that they're loaded after `require "sinatra/activerecord"`.
 
 Now everything just works:
 
