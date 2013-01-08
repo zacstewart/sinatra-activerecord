@@ -10,9 +10,6 @@ describe "Rake tasks" do
   end
 
   before(:each) do
-    FileUtils.mkdir_p("tmp")
-    FileUtils.rm_rf("tmp/foo.sqlite3")
-
     ActiveRecord::Base.remove_connection
     ActiveRecord::Base.establish_connection("sqlite3:///tmp/foo.sqlite3")
     ActiveRecord::Migrator.migrations_paths = "tmp"
@@ -26,7 +23,6 @@ describe "Rake tasks" do
 
   after(:each) do
     FileUtils.rm_rf("db")
-    FileUtils.rm_rf("tmp")
   end
 
   it "uses ActiveRecord::Migrator.migrations_paths for the migration directory" do

@@ -33,12 +33,8 @@ describe "the sinatra extension" do
   end
 
   it "establishes the database connection when set" do
-    expect {
-      @app.set :database, database_url
-    }.to change{ActiveRecord::Base.connected?}.to(true)
-    expect {
-      @app.set :database, database_url
-    }.to change{ActiveRecord::Base.connection.last_use}
+    expect { @app.set :database, database_url }.to establish_database_connection
+    expect { @app.set :database, database_url }.to change{ActiveRecord::Base.connection.last_use}
   end
 
   it "can have the SQLite database in a folder" do
@@ -52,18 +48,13 @@ describe "the sinatra extension" do
   end
 
   it "accepts a hash for the database" do
-    expect {
-      @app.set :database, {adapter: "sqlite3", database: "tmp/foo.sqlite3"}
-    }.to change{ActiveRecord::Base.connected?}.to(true)
+    expect { @app.set :database, {adapter: "sqlite3", database: "tmp/foo.sqlite3"} }.to establish_database_connection
   end
 
   describe "database file" do
     it "accepts a filename for the database" do
-      FileUtils.mkdir_p("tmp")
       FileUtils.cp("spec/fixtures/database.yml", "tmp")
-      expect {
-        @app.set :database_file, "database.yml"
-      }.to change{ActiveRecord::Base.connected?}.to(true)
+      expect { @app.set :database_file, "database.yml" }.to establish_database_connection
     end
 
     it "doesn't raise errors on missing #app_file" do
@@ -82,18 +73,14 @@ describe "the sinatra extension" do
 
     it "establishes the connection upon registering" do
       ActiveRecord::Base.remove_connection
-      expect {
-        @app = new_sinatra_application
-      }.to change{ActiveRecord::Base.connected?}.to(true)
+      expect { @app = new_sinatra_application }.to establish_database_connection
     end
 
     it "is overriden by config/database.yml" do
       FileUtils.mkdir_p("tmp/config")
       FileUtils.touch("tmp/config/database.yml")
 
-      expect {
-        @app = new_sinatra_application
-      }.to raise_error(ActiveRecord::AdapterNotSpecified)
+      expect { @app = new_sinatra_application }.to raise_error(ActiveRecord::AdapterNotSpecified)
     end
   end
 end
