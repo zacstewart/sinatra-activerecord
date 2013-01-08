@@ -7,7 +7,7 @@ describe "the sinatra extension" do
 
   def new_sinatra_application
     Class.new(Sinatra::Base) do
-      set :app_file, File.join(ROOT, "tmp")
+      set :app_file, File.join(ROOT, "tmp/app.rb")
       register Sinatra::ActiveRecordExtension
     end
   end
@@ -69,6 +69,23 @@ describe "the sinatra extension" do
     it "raises errors on invalid database.yml" do
       FileUtils.touch("tmp/database.yml")
       expect { @app.set :database_file, "database.yml" }.to raise_error(ActiveRecord::AdapterNotSpecified)
+    end
+
+    it "handles namespacing into environments" do
+      FileUtils.cp("spec/fixtures/database.yml", "tmp")
+      expect { @app.set :database_file, "database.yml" }.to establish_database_connection
+      @app.set :environment, :production
+      expect { @app.set :database_file, "database.yml" }.to raise_error(ActiveRecord::AdapterNotSpecified)
+    end
+
+    it "handles non-namespaced database.yml" do
+      File.open("tmp/database.yml", "w") do |file|
+        file.write <<-EOS
+adapter: "sqlite3"
+database: "tmp/foo.sqlite3"
+        EOS
+      end
+      expect { @app.set :database_file, "database.yml" }.to establish_database_connection
     end
   end
 
