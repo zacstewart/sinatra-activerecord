@@ -65,6 +65,11 @@ describe "the sinatra extension" do
     it "doesn't raise errors on missing file" do
       expect { @app.set :database_file, "database.yml" }.to_not raise_error
     end
+
+    it "raises errors on invalid database.yml" do
+      FileUtils.touch("tmp/database.yml")
+      expect { @app.set :database_file, "database.yml" }.to raise_error(ActiveRecord::AdapterNotSpecified)
+    end
   end
 
   context "DATABASE_URL is set" do
