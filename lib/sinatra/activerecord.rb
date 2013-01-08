@@ -11,8 +11,8 @@ module Sinatra
   end
 
   module ActiveRecordExtension
-    def database=(url)
-      set :database_url, url
+    def database=(spec)
+      set :database_spec, spec
       @database = nil
       database
     end
@@ -20,7 +20,7 @@ module Sinatra
     def database
       @database ||= begin
         ActiveRecord::Base.logger = activerecord_logger
-        ActiveRecord::Base.establish_connection(resolve_spec(database_url))
+        ActiveRecord::Base.establish_connection(resolve_spec(database_spec))
         ActiveRecord::Base.connection
         ActiveRecord::Base
       end
@@ -46,9 +46,9 @@ module Sinatra
 
     def self.registered(app)
       app.set :activerecord_logger, Logger.new(STDOUT)
-      app.set :database_url, ENV['DATABASE_URL']
+      app.set :database_spec, ENV['DATABASE_URL']
       app.set :database_file, "config/database.yml"
-      app.database if app.database_url
+      app.database if app.database_spec
       app.helpers ActiveRecordHelper
 
       # re-connect if database connection dropped
