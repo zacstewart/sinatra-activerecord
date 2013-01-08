@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2.1
+
+- Fix specifying database from a file not working properly.
+
 ## Version 1.2.0
 
 - You can now set a custom migrations directory. Take a look at
