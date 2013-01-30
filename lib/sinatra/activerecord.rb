@@ -37,9 +37,7 @@ module Sinatra
         require 'erb'
 
         database_hash = YAML.load(ERB.new(File.read(path)).result) || {}
-        if %w[development test production].any? { |env| database_hash[env] }
-          database_hash = database_hash[environment.to_s]
-        end
+        database_hash = database_hash[environment.to_s] if database_hash[environment.to_s]
         set :database, database_hash
       end
     end
