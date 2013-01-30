@@ -57,8 +57,8 @@ describe "the sinatra extension" do
       expect { @app.set :database_file, "database.yml" }.to establish_database_connection
     end
 
-    it "doesn't raise errors on missing #app_file" do
-      @app.set :app_file, nil
+    it "doesn't raise errors on missing #root" do
+      @app.set :root, nil
       expect { @app.set :database_file, "database.yml" }.to_not raise_error
     end
 

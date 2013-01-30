@@ -58,17 +58,17 @@ module Sinatra
 
     private
 
-    def resolve_spec(database_url)
-      if database_url.is_a?(String)
-        if database_url =~ %r{^sqlite3?://[^/]+$}
+    def resolve_spec(database_spec)
+      if database_spec.is_a?(String)
+        if database_spec =~ %r{^sqlite3?://[^/]+$}
           warn <<-MESSAGE.strip_heredoc
             It seems your database URL looks something like this: "sqlite3://<database_name>".
             This doesn't work anymore, you need to use 3 slashes, like this: "sqlite3:///<database_name>".
           MESSAGE
         end
-        database_url.sub(/^sqlite:/, "sqlite3:")
+        database_spec.sub(/^sqlite:/, "sqlite3:")
       else
-        database_url
+        database_spec
       end
     end
   end
