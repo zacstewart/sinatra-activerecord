@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.2.2
+
+- Fix not allowing environments other than "development", "test" and "production".
+
 ## Version 1.2.1
 
 - Fix specifying database from a file not working properly.
